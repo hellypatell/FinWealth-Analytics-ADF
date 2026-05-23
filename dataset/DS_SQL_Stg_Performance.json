@@ -1,0 +1,75 @@
+{
+	"name": "DS_SQL_Stg_Performance",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "performance_sk",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "account_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "benchmark_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "month_start_date_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "return_pct",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 6
+			},
+			{
+				"name": "benchmark_return_pct",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 6
+			},
+			{
+				"name": "excess_return_pct",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 6
+			},
+			{
+				"name": "cumulative_return_pct",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 6
+			},
+			{
+				"name": "dwh_load_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "batch_id",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "stg_performance"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

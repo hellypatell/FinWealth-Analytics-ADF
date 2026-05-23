@@ -1,0 +1,70 @@
+{
+	"name": "DS_SQL_Stg_Clients",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "client_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "client_id",
+				"type": "varchar"
+			},
+			{
+				"name": "client_name",
+				"type": "varchar"
+			},
+			{
+				"name": "segment",
+				"type": "varchar"
+			},
+			{
+				"name": "risk_profile",
+				"type": "varchar"
+			},
+			{
+				"name": "country",
+				"type": "varchar"
+			},
+			{
+				"name": "client_since",
+				"type": "date"
+			},
+			{
+				"name": "advisor_id",
+				"type": "varchar"
+			},
+			{
+				"name": "is_current",
+				"type": "bit"
+			},
+			{
+				"name": "dwh_created_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "dwh_updated_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "stg_clients"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

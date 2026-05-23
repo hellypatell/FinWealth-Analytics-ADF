@@ -1,0 +1,49 @@
+{
+	"name": "DS_SQL_Stg_Prices",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SecurityID",
+				"type": "varchar"
+			},
+			{
+				"name": "PriceDate",
+				"type": "date"
+			},
+			{
+				"name": "ClosePrice",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "stg_load_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "stg_source_file",
+				"type": "varchar"
+			},
+			{
+				"name": "stg_batch_id",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "stg_prices"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

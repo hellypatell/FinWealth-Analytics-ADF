@@ -1,0 +1,60 @@
+{
+	"name": "DS_SQL_Stg_Fees",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "fee_sk",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "fee_id",
+				"type": "varchar"
+			},
+			{
+				"name": "account_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "fee_date_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "fee_type",
+				"type": "varchar"
+			},
+			{
+				"name": "fee_amount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "dwh_load_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "batch_id",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "stg_fees"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

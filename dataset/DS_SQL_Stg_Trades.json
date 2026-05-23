@@ -1,0 +1,77 @@
+{
+	"name": "DS_SQL_Stg_Trades",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "TradeID",
+				"type": "varchar"
+			},
+			{
+				"name": "AccountID",
+				"type": "varchar"
+			},
+			{
+				"name": "SecurityID",
+				"type": "varchar"
+			},
+			{
+				"name": "TradeDate",
+				"type": "date"
+			},
+			{
+				"name": "SettleDate",
+				"type": "date"
+			},
+			{
+				"name": "Side",
+				"type": "varchar"
+			},
+			{
+				"name": "Price",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "Quantity",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "Amount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "stg_load_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "stg_source_file",
+				"type": "varchar"
+			},
+			{
+				"name": "stg_batch_id",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "stg_trades"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

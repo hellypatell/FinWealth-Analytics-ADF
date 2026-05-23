@@ -1,0 +1,63 @@
+{
+	"name": "DS_SQL_Stg_Securities",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SecurityID",
+				"type": "varchar"
+			},
+			{
+				"name": "Ticker",
+				"type": "varchar"
+			},
+			{
+				"name": "SecurityName",
+				"type": "varchar"
+			},
+			{
+				"name": "AssetClass",
+				"type": "varchar"
+			},
+			{
+				"name": "Sector",
+				"type": "varchar"
+			},
+			{
+				"name": "Currency",
+				"type": "varchar"
+			},
+			{
+				"name": "Region",
+				"type": "varchar"
+			},
+			{
+				"name": "stg_load_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "stg_source_file",
+				"type": "varchar"
+			},
+			{
+				"name": "stg_batch_id",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "stg_securities"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

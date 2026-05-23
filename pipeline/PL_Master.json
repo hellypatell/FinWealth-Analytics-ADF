@@ -1,0 +1,49 @@
+{
+	"name": "PL_Master",
+	"properties": {
+		"activities": [
+			{
+				"name": "PL_Copy_CSV_To_Staging_To_DWH",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Copy_CSV_To_Staging_To_DWH",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PL_Validation",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "PL_Copy_CSV_To_Staging_To_DWH",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Validate_Staging",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2026-05-23T16:15:30Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

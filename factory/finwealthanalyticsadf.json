@@ -1,0 +1,15 @@
+{
+	"name": "finwealthanalyticsadf",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Enabled",
+			"editable": true
+		}
+	},
+	"location": "southeastasia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "64305ac9-be2c-4215-bbb6-35d215010a3b",
+		"tenantId": "eed5c348-0a2d-4f3f-a2b0-dfbe71cde1b6"
+	}
+}

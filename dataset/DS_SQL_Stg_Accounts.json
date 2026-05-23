@@ -1,0 +1,66 @@
+{
+	"name": "DS_SQL_Stg_Accounts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "account_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "account_id",
+				"type": "varchar"
+			},
+			{
+				"name": "client_id",
+				"type": "varchar"
+			},
+			{
+				"name": "account_type",
+				"type": "varchar"
+			},
+			{
+				"name": "open_date",
+				"type": "date"
+			},
+			{
+				"name": "base_currency",
+				"type": "varchar"
+			},
+			{
+				"name": "status",
+				"type": "varchar"
+			},
+			{
+				"name": "is_current",
+				"type": "bit"
+			},
+			{
+				"name": "dwh_created_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "dwh_updated_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "stg_accounts"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,56 @@
+{
+	"name": "DS_CSV_Performance",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_BlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "CSVs"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Performance.csv",
+				"container": "raw-data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "AccountID",
+				"type": "String"
+			},
+			{
+				"name": "MonthStart",
+				"type": "String"
+			},
+			{
+				"name": "ReturnPct",
+				"type": "String"
+			},
+			{
+				"name": "BenchmarkCode",
+				"type": "String"
+			},
+			{
+				"name": "BenchmarkReturnPct",
+				"type": "String"
+			},
+			{
+				"name": "ExcessReturnPct",
+				"type": "String"
+			},
+			{
+				"name": "CumulativeReturnPct",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,44 @@
+{
+	"name": "DS_SQL_Stg_Benchmarks",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "benchmark_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "benchmark_code",
+				"type": "varchar"
+			},
+			{
+				"name": "description",
+				"type": "varchar"
+			},
+			{
+				"name": "currency",
+				"type": "varchar"
+			},
+			{
+				"name": "dwh_created_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "stg_benchmarks"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

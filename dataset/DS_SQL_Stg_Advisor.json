@@ -1,0 +1,63 @@
+{
+	"name": "DS_SQL_Stg_Advisor",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Staging"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "advisor_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "advisor_id",
+				"type": "varchar"
+			},
+			{
+				"name": "advisor_name",
+				"type": "varchar"
+			},
+			{
+				"name": "region",
+				"type": "varchar"
+			},
+			{
+				"name": "join_date",
+				"type": "date"
+			},
+			{
+				"name": "experience_years",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "is_current",
+				"type": "bit"
+			},
+			{
+				"name": "dwh_created_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "dwh_updated_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "stg_advisors"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
