@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "finwealthanalyticsadf"
+		},
+		"LS_BlobStorage_connectionString": {
+			"value": ""
+		},
+		"LS_StagingSQL_password": {
+			"value": ""
+		},
+		"LS_StagingSQL_properties_typeProperties_server": {
+			"value": "finwealth-sql-server.database.windows.net"
+		},
+		"LS_StagingSQL_properties_typeProperties_database": {
+			"value": "FinWealthDW"
+		},
+		"LS_StagingSQL_properties_typeProperties_userName": {
+			"value": "adminuser"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
