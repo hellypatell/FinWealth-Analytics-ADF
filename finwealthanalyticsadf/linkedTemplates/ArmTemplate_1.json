@@ -13,6 +13,386 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_Fact_Fees')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_StagingSQL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "fee_sk",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "fee_id",
+						"type": "varchar"
+					},
+					{
+						"name": "account_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fee_date_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fee_type",
+						"type": "varchar"
+					},
+					{
+						"name": "fee_amount",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "dwh_load_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "batch_id",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Fact_Fees"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Fact_Holdings')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_StagingSQL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "holding_sk",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "account_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "security_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "valuation_date_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "quantity",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "close_price",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "market_value",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "dwh_load_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "batch_id",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Fact_Holdings"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Fact_Performance')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_StagingSQL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "performance_sk",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "account_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "benchmark_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "month_start_date_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "return_pct",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 6
+					},
+					{
+						"name": "benchmark_return_pct",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 6
+					},
+					{
+						"name": "excess_return_pct",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 6
+					},
+					{
+						"name": "cumulative_return_pct",
+						"type": "decimal",
+						"precision": 10,
+						"scale": 6
+					},
+					{
+						"name": "dwh_load_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "batch_id",
+						"type": "varchar"
+					},
+					{
+						"name": "PerformanceBand",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Fact_Performance"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Fact_Trades')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_StagingSQL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "trade_sk",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "trade_id",
+						"type": "varchar"
+					},
+					{
+						"name": "account_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "security_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "trade_date_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "settle_date_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "side",
+						"type": "varchar"
+					},
+					{
+						"name": "price",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "quantity",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "trade_amount",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "gross_amount",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "dwh_load_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "batch_id",
+						"type": "varchar"
+					},
+					{
+						"name": "TradeCategory",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TradeSize",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Fact_Trades"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SQL_Stg_Accounts')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_StagingSQL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Staging"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "account_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "account_id",
+						"type": "varchar"
+					},
+					{
+						"name": "client_id",
+						"type": "varchar"
+					},
+					{
+						"name": "account_type",
+						"type": "varchar"
+					},
+					{
+						"name": "open_date",
+						"type": "date"
+					},
+					{
+						"name": "base_currency",
+						"type": "varchar"
+					},
+					{
+						"name": "status",
+						"type": "varchar"
+					},
+					{
+						"name": "is_current",
+						"type": "bit"
+					},
+					{
+						"name": "dwh_created_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "dwh_updated_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "stg_accounts"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_SQL_Stg_Advisor')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -658,134 +1038,6 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "stg_trades"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Fact_Cashflow')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_StagingSQL",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "DHW"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "cashflow_sk",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "cashflow_id",
-						"type": "varchar"
-					},
-					{
-						"name": "account_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "cashflow_date_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "cashflow_type",
-						"type": "varchar"
-					},
-					{
-						"name": "amount",
-						"type": "decimal",
-						"precision": 18,
-						"scale": 2
-					},
-					{
-						"name": "dwh_load_date",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "batch_id",
-						"type": "varchar"
-					},
-					{
-						"name": "FlowDirection",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Fact_Cashflows"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_Fact_Fees')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_StagingSQL",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "DHW"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "fee_sk",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "fee_id",
-						"type": "varchar"
-					},
-					{
-						"name": "account_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "fee_date_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "fee_type",
-						"type": "varchar"
-					},
-					{
-						"name": "fee_amount",
-						"type": "decimal",
-						"precision": 18,
-						"scale": 2
-					},
-					{
-						"name": "dwh_load_date",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "batch_id",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Fact_Fees"
 				}
 			},
 			"dependsOn": []
@@ -1806,6 +2058,7 @@
 				"lastPublishTime": "2026-05-23T16:15:28Z"
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_SQL_Stg_Accounts')]",
 				"[concat(variables('factoryId'), '/datasets/DS_SQL_Stg_Advisor')]",
 				"[concat(variables('factoryId'), '/datasets/DS_SQL_Stg_Cashflows')]",
 				"[concat(variables('factoryId'), '/datasets/DS_SQL_Stg_Benchmarks')]",
@@ -1908,237 +2161,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DF_Load_Fact_Trades')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "DS_SQL_Stg_Trades",
-								"type": "DatasetReference"
-							},
-							"name": "SourceTrades"
-						},
-						{
-							"dataset": {
-								"referenceName": "DS_Dim_Accounts",
-								"type": "DatasetReference"
-							},
-							"name": "sourceAccount"
-						},
-						{
-							"dataset": {
-								"referenceName": "DS_Dim_Security",
-								"type": "DatasetReference"
-							},
-							"name": "sourceSecurity"
-						},
-						{
-							"dataset": {
-								"referenceName": "DS_Dim_Date",
-								"type": "DatasetReference"
-							},
-							"name": "sourceDate"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "DS_Fact_Trades",
-								"type": "DatasetReference"
-							},
-							"name": "sinkData"
-						}
-					],
-					"transformations": [
-						{
-							"name": "FilterNullTrades"
-						},
-						{
-							"name": "LookupAccounts"
-						},
-						{
-							"name": "DerivedColumnTrades"
-						},
-						{
-							"name": "lookupSecurity"
-						},
-						{
-							"name": "lookupDate"
-						},
-						{
-							"name": "selectCols"
-						},
-						{
-							"name": "derivedColumnDateKeys"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          TradeID as string,",
-						"          AccountID as string,",
-						"          SecurityID as string,",
-						"          TradeDate as date,",
-						"          SettleDate as date,",
-						"          Side as string,",
-						"          Price as decimal(18,4),",
-						"          Quantity as decimal(18,4),",
-						"          Amount as decimal(18,2),",
-						"          stg_load_date as timestamp,",
-						"          stg_source_file as string,",
-						"          stg_batch_id as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> SourceTrades",
-						"source(output(",
-						"          account_sk as integer,",
-						"          account_id as string,",
-						"          client_id as string,",
-						"          account_type as string,",
-						"          open_date as date,",
-						"          base_currency as string,",
-						"          status as string,",
-						"          is_current as boolean,",
-						"          dwh_created_date as timestamp,",
-						"          dwh_updated_date as timestamp,",
-						"          CurrencyGroup as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> sourceAccount",
-						"source(output(",
-						"          security_sk as integer,",
-						"          security_id as string,",
-						"          ticker as string,",
-						"          security_name as string,",
-						"          asset_class as string,",
-						"          sector as string,",
-						"          currency as string,",
-						"          region as string,",
-						"          is_current as boolean,",
-						"          dwh_created_date as timestamp,",
-						"          dwh_updated_date as timestamp,",
-						"          AssetClassGroup as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> sourceSecurity",
-						"source(output(",
-						"          date_sk as integer,",
-						"          full_date as date,",
-						"          day_of_week as string,",
-						"          day_num as integer,",
-						"          week_num as integer,",
-						"          month_num as integer,",
-						"          month_name as string,",
-						"          quarter_num as integer,",
-						"          quarter_name as string,",
-						"          year_num as integer,",
-						"          is_weekday as boolean,",
-						"          is_month_end as boolean",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> sourceDate",
-						"SourceTrades filter(!isNull(TradeID) && !isNull(AccountID) && !isNull(SecurityID)) ~> FilterNullTrades",
-						"DerivedColumnTrades, sourceAccount lookup(AccountID == account_id,",
-						"     multiple: false,",
-						"     pickup: 'any',",
-						"     broadcast: 'auto')~> LookupAccounts",
-						"FilterNullTrades derive(TradeCategory = case(\r",
-						"  upper(Side) == 'BUY', 'Purchase',\r",
-						"  upper(Side) == 'SELL', 'Liquidation',\r",
-						"  'Unknown'\r",
-						"),",
-						"          TradeSize = case(   toDouble(Amount) >= 100000, 'Large',   toDouble(Amount) >= 10000, 'Medium',   'Small' ),",
-						"          gross_amount = abs(toDecimal(Amount))) ~> DerivedColumnTrades",
-						"LookupAccounts, sourceSecurity lookup(SecurityID == security_id,",
-						"     multiple: false,",
-						"     pickup: 'any',",
-						"     broadcast: 'auto')~> lookupSecurity",
-						"lookupSecurity, sourceDate lookup(SettleDate == full_date,",
-						"     multiple: false,",
-						"     pickup: 'any',",
-						"     broadcast: 'auto')~> lookupDate",
-						"derivedColumnDateKeys select(mapColumn(",
-						"          TradeID,",
-						"          Side,",
-						"          Price,",
-						"          Quantity,",
-						"          Amount,",
-						"          stg_batch_id,",
-						"          TradeCategory,",
-						"          TradeSize,",
-						"          account_sk = AccountID,",
-						"          security_sk = SecurityID,",
-						"          date_sk,",
-						"          gross_amount,",
-						"          trade_date_sk,",
-						"          settle_date_sk",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> selectCols",
-						"lookupDate derive(trade_date_sk = toInteger(toString(TradeDate, 'yyyyMMdd')),",
-						"          settle_date_sk = toInteger(toString(SettleDate, 'yyyyMMdd'))) ~> derivedColumnDateKeys",
-						"selectCols sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          trade_sk as long,",
-						"          trade_id as string,",
-						"          account_sk as integer,",
-						"          security_sk as integer,",
-						"          trade_date_sk as integer,",
-						"          settle_date_sk as integer,",
-						"          side as string,",
-						"          price as decimal(18,4),",
-						"          quantity as decimal(18,4),",
-						"          trade_amount as decimal(18,2),",
-						"          gross_amount as decimal(18,2),",
-						"          dwh_load_date as timestamp,",
-						"          batch_id as string,",
-						"          TradeCategory as string,",
-						"          TradeSize as string",
-						"     ),",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     format: 'table',",
-						"     preSQLs:['TRUNCATE TABLE Fact_Trades'],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError',",
-						"     mapColumn(",
-						"          trade_id = TradeID,",
-						"          account_sk,",
-						"          security_sk,",
-						"          trade_date_sk,",
-						"          settle_date_sk,",
-						"          side = Side,",
-						"          price = Price,",
-						"          quantity = Quantity,",
-						"          trade_amount = Amount,",
-						"          gross_amount,",
-						"          batch_id = stg_batch_id,",
-						"          TradeCategory,",
-						"          TradeSize",
-						"     )) ~> sinkData"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_SQL_Stg_Trades')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/DF_Load_Fact_Cashflows')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -2218,7 +2240,9 @@
 						"     format: 'table') ~> sourceAccounts",
 						"SourceCashflows filter(!isNull(CashflowID) && !isNull(AccountID) && !isNull(CashflowDate) && !isNull(Amount)) ~> FilterNulls",
 						"FilterNulls derive(cashflow_date_sk = toInteger(toString(CashflowDate, 'yyyyMMdd')),",
-						"          FlowDirection = case(   upper(Type) == 'DEPOSIT', 'Inflow',   upper(Type) == 'INTEREST', 'Inflow',   upper(Type) == 'DIVIDEND', 'Inflow',   upper(Type) == 'WITHDRAWAL', 'Outflow',   'Neutral' )) ~> DerivedCashflows",
+						"          FlowDirection = case(   upper(Type) == 'DEPOSIT', 'Inflow',   upper(Type) == 'INTEREST', 'Inflow',   upper(Type) == 'DIVIDEND', 'Inflow',   upper(Type) == 'WITHDRAWAL', 'Outflow',   'Neutral' ),",
+						"          batch_id = 'ADF_DF_RUN',",
+						"          dwh_load_date = currentTimestamp()) ~> DerivedCashflows",
 						"DerivedCashflows, sourceAccounts lookup(toString(AccountID) == toString(account_id),",
 						"     multiple: false,",
 						"     pickup: 'any',",
@@ -2229,7 +2253,9 @@
 						"          cashflow_type = Type,",
 						"          amount = Amount,",
 						"          FlowDirection,",
-						"          account_sk",
+						"          account_sk,",
+						"          batch_id,",
+						"          dwh_load_date",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> selectCol",
@@ -2261,14 +2287,15 @@
 						"          cashflow_date_sk,",
 						"          cashflow_type,",
 						"          amount,",
-						"          FlowDirection",
+						"          FlowDirection,",
+						"          batch_id,",
+						"          dwh_load_date",
 						"     )) ~> SinkFactCashflows"
 					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_SQL_Stg_Cashflows')]",
-				"[concat(variables('factoryId'), '/datasets/DS_Fact_Cashflow')]"
+				"[concat(variables('factoryId'), '/datasets/DS_SQL_Stg_Cashflows')]"
 			]
 		},
 		{
@@ -2350,8 +2377,10 @@
 						"     isolationLevel: 'READ_UNCOMMITTED',",
 						"     format: 'table') ~> sourceAccount",
 						"SourceFees filter(!isNull(FeeID) && !isNull(AccountID) && !isNull(Amount)) ~> FilterNulls",
-						"FilterNulls derive(fee_date_sk = toInteger(toString(FeeDate, 'yyyyMMdd'))) ~> DerivedFees",
-						"DerivedFees, sourceAccount lookup(AccountID  == account_id,",
+						"FilterNulls derive(fee_date_sk = toInteger(toString(FeeDate, 'yyyyMMdd')),",
+						"          dwh_load_date = currentTimestamp(),",
+						"          batch_id = 'ADF_DF_RUN') ~> DerivedFees",
+						"DerivedFees, sourceAccount lookup(AccountID == account_id,",
 						"     multiple: false,",
 						"     pickup: 'any',",
 						"     broadcast: 'auto')~> lookup1",
@@ -2361,7 +2390,9 @@
 						"          FeeType,",
 						"          Amount,",
 						"          fee_date_sk,",
-						"          account_sk",
+						"          account_sk,",
+						"          batch_id,",
+						"          dwh_load_date",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
@@ -2391,7 +2422,9 @@
 						"          account_sk,",
 						"          fee_date_sk,",
 						"          fee_type = FeeType,",
-						"          fee_amount = Amount",
+						"          fee_amount = Amount,",
+						"          batch_id,",
+						"          dwh_load_date",
 						"     )) ~> SinkFactFees"
 					]
 				}
@@ -2402,61 +2435,201 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/PL_Master')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/DF_Load_Fact_Holdings')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "PL_Copy_CSV_To_Staging_To_DWH",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "PL_Copy_CSV_To_Staging_To_DWH",
-								"type": "PipelineReference"
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DS_SQL_Stg_Holdings",
+								"type": "DatasetReference"
 							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "PL_Validation",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "PL_Copy_CSV_To_Staging_To_DWH",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
+							"name": "SourceHoldings"
 						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "PL_Validate_Staging",
-								"type": "PipelineReference"
+						{
+							"dataset": {
+								"referenceName": "DS_SQL_Stg_Prices",
+								"type": "DatasetReference"
 							},
-							"waitOnCompletion": true,
-							"parameters": {}
+							"name": "SourcePrices"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_Dim_Accounts",
+								"type": "DatasetReference"
+							},
+							"name": "sourceaccounts"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_Dim_Security",
+								"type": "DatasetReference"
+							},
+							"name": "sourceSecurity"
 						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2026-05-23T16:15:30Z"
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DS_Fact_Holdings",
+								"type": "DatasetReference"
+							},
+							"name": "SinkFactHoldings"
+						}
+					],
+					"transformations": [
+						{
+							"name": "JoinPrices"
+						},
+						{
+							"name": "FilterNulls"
+						},
+						{
+							"name": "DerivedHoldings"
+						},
+						{
+							"name": "LookupAccountSK"
+						},
+						{
+							"name": "LookupSecuritySK"
+						},
+						{
+							"name": "Select"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          AccountID as string,",
+						"          SecurityID as string,",
+						"          Quantity as decimal(18,4),",
+						"          ValuationDate as date,",
+						"          MarketValue as decimal(18,2),",
+						"          stg_load_date as timestamp,",
+						"          stg_source_file as string,",
+						"          stg_batch_id as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> SourceHoldings",
+						"source(output(",
+						"          SecurityID as string,",
+						"          PriceDate as date,",
+						"          ClosePrice as decimal(18,4),",
+						"          stg_load_date as timestamp,",
+						"          stg_source_file as string,",
+						"          stg_batch_id as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> SourcePrices",
+						"source(output(",
+						"          account_sk as integer,",
+						"          account_id as string,",
+						"          client_id as string,",
+						"          account_type as string,",
+						"          open_date as date,",
+						"          base_currency as string,",
+						"          status as string,",
+						"          is_current as boolean,",
+						"          dwh_created_date as timestamp,",
+						"          dwh_updated_date as timestamp,",
+						"          CurrencyGroup as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> sourceaccounts",
+						"source(output(",
+						"          security_sk as integer,",
+						"          security_id as string,",
+						"          ticker as string,",
+						"          security_name as string,",
+						"          asset_class as string,",
+						"          sector as string,",
+						"          currency as string,",
+						"          region as string,",
+						"          is_current as boolean,",
+						"          dwh_created_date as timestamp,",
+						"          dwh_updated_date as timestamp,",
+						"          AssetClassGroup as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> sourceSecurity",
+						"SourceHoldings, SourcePrices join(SourceHoldings@SecurityID == SourcePrices@SecurityID",
+						"     && ValuationDate == PriceDate,",
+						"     joinType:'left',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> JoinPrices",
+						"JoinPrices filter(!isNull(AccountID) && !isNull(SourceHoldings@SecurityID)) ~> FilterNulls",
+						"FilterNulls derive(holding_date_sk = toInteger(toString(ValuationDate, 'yyyyMMdd')),",
+						"          dwh_load_date = currentTimestamp(),",
+						"          batch_id = 'ADF_DF_RUN') ~> DerivedHoldings",
+						"DerivedHoldings, sourceaccounts lookup(AccountID == account_id,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> LookupAccountSK",
+						"LookupAccountSK, sourceSecurity lookup(SourceHoldings@SecurityID == security_id,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> LookupSecuritySK",
+						"LookupSecuritySK select(mapColumn(",
+						"          Quantity,",
+						"          MarketValue,",
+						"          holding_date_sk,",
+						"          account_sk,",
+						"          security_sk,",
+						"          ClosePrice,",
+						"          batch_id,",
+						"          dwh_load_date",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> Select",
+						"Select sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          holding_sk as long,",
+						"          account_sk as integer,",
+						"          security_sk as integer,",
+						"          valuation_date_sk as integer,",
+						"          quantity as decimal(18,4),",
+						"          close_price as decimal(18,4),",
+						"          market_value as decimal(18,2),",
+						"          dwh_load_date as timestamp,",
+						"          batch_id as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          account_sk,",
+						"          security_sk,",
+						"          valuation_date_sk = holding_date_sk,",
+						"          quantity = Quantity,",
+						"          close_price = ClosePrice,",
+						"          market_value = MarketValue,",
+						"          dwh_load_date,",
+						"          batch_id",
+						"     )) ~> SinkFactHoldings"
+					]
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/PL_Copy_CSV_To_Staging_To_DWH')]"
+				"[concat(variables('factoryId'), '/datasets/DS_SQL_Stg_Holdings')]",
+				"[concat(variables('factoryId'), '/datasets/DS_SQL_Stg_Prices')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Fact_Holdings')]"
 			]
 		}
 	]

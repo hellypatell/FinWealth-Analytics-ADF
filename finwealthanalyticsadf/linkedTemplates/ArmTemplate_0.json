@@ -858,6 +858,54 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_Dim_Benchmark')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_StagingSQL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "benchmark_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "benchmark_code",
+						"type": "varchar"
+					},
+					{
+						"name": "description",
+						"type": "varchar"
+					},
+					{
+						"name": "currency",
+						"type": "varchar"
+					},
+					{
+						"name": "dwh_created_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Dim_Benchmark"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_StagingSQL')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_Dim_Date')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1015,7 +1063,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DS_Fact_Trades')]",
+			"name": "[concat(parameters('factoryName'), '/DS_Fact_Cashflow')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1030,12 +1078,12 @@
 				"type": "AzureSqlTable",
 				"schema": [
 					{
-						"name": "trade_sk",
+						"name": "cashflow_sk",
 						"type": "bigint",
 						"precision": 19
 					},
 					{
-						"name": "trade_id",
+						"name": "cashflow_id",
 						"type": "varchar"
 					},
 					{
@@ -1044,44 +1092,16 @@
 						"precision": 10
 					},
 					{
-						"name": "security_sk",
+						"name": "cashflow_date_sk",
 						"type": "int",
 						"precision": 10
 					},
 					{
-						"name": "trade_date_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "settle_date_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "side",
+						"name": "cashflow_type",
 						"type": "varchar"
 					},
 					{
-						"name": "price",
-						"type": "decimal",
-						"precision": 18,
-						"scale": 4
-					},
-					{
-						"name": "quantity",
-						"type": "decimal",
-						"precision": 18,
-						"scale": 4
-					},
-					{
-						"name": "trade_amount",
-						"type": "decimal",
-						"precision": 18,
-						"scale": 2
-					},
-					{
-						"name": "gross_amount",
+						"name": "amount",
 						"type": "decimal",
 						"precision": 18,
 						"scale": 2
@@ -1097,87 +1117,13 @@
 						"type": "varchar"
 					},
 					{
-						"name": "TradeCategory",
-						"type": "nvarchar"
-					},
-					{
-						"name": "TradeSize",
+						"name": "FlowDirection",
 						"type": "nvarchar"
 					}
 				],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": "Fact_Trades"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_StagingSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_SQL_Stg_Accounts')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_StagingSQL",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "account_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "account_id",
-						"type": "varchar"
-					},
-					{
-						"name": "client_id",
-						"type": "varchar"
-					},
-					{
-						"name": "account_type",
-						"type": "varchar"
-					},
-					{
-						"name": "open_date",
-						"type": "date"
-					},
-					{
-						"name": "base_currency",
-						"type": "varchar"
-					},
-					{
-						"name": "status",
-						"type": "varchar"
-					},
-					{
-						"name": "is_current",
-						"type": "bit"
-					},
-					{
-						"name": "dwh_created_date",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "dwh_updated_date",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "stg_accounts"
+					"table": "Fact_Cashflows"
 				}
 			},
 			"dependsOn": [
