@@ -17,9 +17,31 @@
 						"type": "DatasetReference"
 					},
 					"name": "SourcePrices"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Dim_Accounts",
+						"type": "DatasetReference"
+					},
+					"name": "sourceaccounts"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Dim_Security",
+						"type": "DatasetReference"
+					},
+					"name": "sourceSecurity"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Fact_Holdings",
+						"type": "DatasetReference"
+					},
+					"name": "SinkFactHoldings"
+				}
+			],
 			"transformations": [
 				{
 					"name": "JoinPrices"
@@ -29,6 +51,15 @@
 				},
 				{
 					"name": "DerivedHoldings"
+				},
+				{
+					"name": "LookupAccountSK"
+				},
+				{
+					"name": "LookupSecuritySK"
+				},
+				{
+					"name": "Select"
 				}
 			],
 			"scriptLines": [
@@ -58,6 +89,41 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> SourcePrices",
+				"source(output(",
+				"          account_sk as integer,",
+				"          account_id as string,",
+				"          client_id as string,",
+				"          account_type as string,",
+				"          open_date as date,",
+				"          base_currency as string,",
+				"          status as string,",
+				"          is_current as boolean,",
+				"          dwh_created_date as timestamp,",
+				"          dwh_updated_date as timestamp,",
+				"          CurrencyGroup as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceaccounts",
+				"source(output(",
+				"          security_sk as integer,",
+				"          security_id as string,",
+				"          ticker as string,",
+				"          security_name as string,",
+				"          asset_class as string,",
+				"          sector as string,",
+				"          currency as string,",
+				"          region as string,",
+				"          is_current as boolean,",
+				"          dwh_created_date as timestamp,",
+				"          dwh_updated_date as timestamp,",
+				"          AssetClassGroup as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceSecurity",
 				"SourceHoldings, SourcePrices join(SourceHoldings@SecurityID == SourcePrices@SecurityID",
 				"     && ValuationDate == PriceDate,",
 				"     joinType:'left',",
@@ -67,7 +133,58 @@
 				"JoinPrices filter(!isNull(AccountID) && !isNull(SourceHoldings@SecurityID)) ~> FilterNulls",
 				"FilterNulls derive(holding_date_sk = toInteger(toString(ValuationDate, 'yyyyMMdd')),",
 				"          dwh_load_date = currentTimestamp(),",
-				"          batch_id = 'ADF_DF_RUN') ~> DerivedHoldings"
+				"          batch_id = 'ADF_DF_RUN') ~> DerivedHoldings",
+				"DerivedHoldings, sourceaccounts lookup(AccountID == account_id,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> LookupAccountSK",
+				"LookupAccountSK, sourceSecurity lookup(SourceHoldings@SecurityID == security_id,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> LookupSecuritySK",
+				"LookupSecuritySK select(mapColumn(",
+				"          Quantity,",
+				"          MarketValue,",
+				"          holding_date_sk,",
+				"          account_sk,",
+				"          security_sk,",
+				"          ClosePrice,",
+				"          batch_id,",
+				"          dwh_load_date",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Select",
+				"Select sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          holding_sk as long,",
+				"          account_sk as integer,",
+				"          security_sk as integer,",
+				"          valuation_date_sk as integer,",
+				"          quantity as decimal(18,4),",
+				"          close_price as decimal(18,4),",
+				"          market_value as decimal(18,2),",
+				"          dwh_load_date as timestamp,",
+				"          batch_id as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          account_sk,",
+				"          security_sk,",
+				"          valuation_date_sk = holding_date_sk,",
+				"          quantity = Quantity,",
+				"          close_price = ClosePrice,",
+				"          market_value = MarketValue,",
+				"          dwh_load_date,",
+				"          batch_id",
+				"     )) ~> SinkFactHoldings"
 			]
 		}
 	}
