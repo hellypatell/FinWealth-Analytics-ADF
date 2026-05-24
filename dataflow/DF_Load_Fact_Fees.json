@@ -75,7 +75,9 @@
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> sourceAccount",
 				"SourceFees filter(!isNull(FeeID) && !isNull(AccountID) && !isNull(Amount)) ~> FilterNulls",
-				"FilterNulls derive(fee_date_sk = toInteger(toString(FeeDate, 'yyyyMMdd'))) ~> DerivedFees",
+				"FilterNulls derive(fee_date_sk = toInteger(toString(FeeDate, 'yyyyMMdd')),",
+				"          dwh_load_date = currentTimestamp(),",
+				"          batch_id = 'ADF_DF_RUN') ~> DerivedFees",
 				"DerivedFees, sourceAccount lookup(AccountID  == account_id,",
 				"     multiple: false,",
 				"     pickup: 'any',",
@@ -86,7 +88,9 @@
 				"          FeeType,",
 				"          Amount,",
 				"          fee_date_sk,",
-				"          account_sk",
+				"          account_sk,",
+				"          batch_id,",
+				"          dwh_load_date",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
@@ -116,7 +120,9 @@
 				"          account_sk,",
 				"          fee_date_sk,",
 				"          fee_type = FeeType,",
-				"          fee_amount = Amount",
+				"          fee_amount = Amount,",
+				"          batch_id,",
+				"          dwh_load_date",
 				"     )) ~> SinkFactFees"
 			]
 		}

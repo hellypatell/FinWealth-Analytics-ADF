@@ -76,7 +76,9 @@
 				"     format: 'table') ~> sourceAccounts",
 				"SourceCashflows filter(!isNull(CashflowID) && !isNull(AccountID) && !isNull(CashflowDate) && !isNull(Amount)) ~> FilterNulls",
 				"FilterNulls derive(cashflow_date_sk = toInteger(toString(CashflowDate, 'yyyyMMdd')),",
-				"          FlowDirection = case(   upper(Type) == 'DEPOSIT', 'Inflow',   upper(Type) == 'INTEREST', 'Inflow',   upper(Type) == 'DIVIDEND', 'Inflow',   upper(Type) == 'WITHDRAWAL', 'Outflow',   'Neutral' )) ~> DerivedCashflows",
+				"          FlowDirection = case(   upper(Type) == 'DEPOSIT', 'Inflow',   upper(Type) == 'INTEREST', 'Inflow',   upper(Type) == 'DIVIDEND', 'Inflow',   upper(Type) == 'WITHDRAWAL', 'Outflow',   'Neutral' ),",
+				"          batch_id = 'ADF_DF_RUN',",
+				"          dwh_load_date = currentTimestamp()) ~> DerivedCashflows",
 				"DerivedCashflows, sourceAccounts lookup(toString(AccountID) == toString(account_id),",
 				"     multiple: false,",
 				"     pickup: 'any',",
@@ -87,7 +89,9 @@
 				"          cashflow_type = Type,",
 				"          amount = Amount,",
 				"          FlowDirection,",
-				"          account_sk",
+				"          account_sk,",
+				"          batch_id,",
+				"          dwh_load_date",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> selectCol",
@@ -119,7 +123,9 @@
 				"          cashflow_date_sk,",
 				"          cashflow_type,",
 				"          amount,",
-				"          FlowDirection",
+				"          FlowDirection,",
+				"          batch_id,",
+				"          dwh_load_date",
 				"     )) ~> SinkFactCashflows"
 			]
 		}

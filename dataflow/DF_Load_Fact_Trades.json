@@ -148,7 +148,9 @@
 				"  'Unknown'\r",
 				"),",
 				"          TradeSize = case(   toDouble(Amount) >= 100000, 'Large',   toDouble(Amount) >= 10000, 'Medium',   'Small' ),",
-				"          gross_amount = abs(toDecimal(Amount))) ~> DerivedColumnTrades",
+				"          gross_amount = abs(toDecimal(Amount)),",
+				"          batch_id = 'ADF_DF_RUN',",
+				"          dwh_load_date = currentTimestamp()) ~> DerivedColumnTrades",
 				"LookupAccounts, sourceSecurity lookup(SecurityID == security_id,",
 				"     multiple: false,",
 				"     pickup: 'any',",
@@ -171,7 +173,9 @@
 				"          date_sk,",
 				"          gross_amount,",
 				"          trade_date_sk,",
-				"          settle_date_sk",
+				"          settle_date_sk,",
+				"          batch_id,",
+				"          dwh_load_date",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> selectCols",
@@ -218,7 +222,9 @@
 				"          gross_amount,",
 				"          batch_id = stg_batch_id,",
 				"          TradeCategory,",
-				"          TradeSize",
+				"          TradeSize,",
+				"          dwh_load_date,",
+				"          batch_id",
 				"     )) ~> sinkData"
 			]
 		}

@@ -1,0 +1,74 @@
+{
+	"name": "DF_Load_Fact_Holdings",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Stg_Holdings",
+						"type": "DatasetReference"
+					},
+					"name": "SourceHoldings"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Stg_Prices",
+						"type": "DatasetReference"
+					},
+					"name": "SourcePrices"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "JoinPrices"
+				},
+				{
+					"name": "FilterNulls"
+				},
+				{
+					"name": "DerivedHoldings"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          AccountID as string,",
+				"          SecurityID as string,",
+				"          Quantity as decimal(18,4),",
+				"          ValuationDate as date,",
+				"          MarketValue as decimal(18,2),",
+				"          stg_load_date as timestamp,",
+				"          stg_source_file as string,",
+				"          stg_batch_id as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceHoldings",
+				"source(output(",
+				"          SecurityID as string,",
+				"          PriceDate as date,",
+				"          ClosePrice as decimal(18,4),",
+				"          stg_load_date as timestamp,",
+				"          stg_source_file as string,",
+				"          stg_batch_id as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourcePrices",
+				"SourceHoldings, SourcePrices join(SourceHoldings@SecurityID == SourcePrices@SecurityID",
+				"     && ValuationDate == PriceDate,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JoinPrices",
+				"JoinPrices filter(!isNull(AccountID) && !isNull(SourceHoldings@SecurityID)) ~> FilterNulls",
+				"FilterNulls derive(holding_date_sk = toInteger(toString(ValuationDate, 'yyyyMMdd')),",
+				"          dwh_load_date = currentTimestamp(),",
+				"          batch_id = 'ADF_DF_RUN') ~> DerivedHoldings"
+			]
+		}
+	}
+}

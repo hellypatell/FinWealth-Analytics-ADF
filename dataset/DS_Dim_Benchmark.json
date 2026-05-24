@@ -1,0 +1,43 @@
+{
+	"name": "DS_Dim_Benchmark",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DHW"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "benchmark_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "benchmark_code",
+				"type": "varchar"
+			},
+			{
+				"name": "description",
+				"type": "varchar"
+			},
+			{
+				"name": "currency",
+				"type": "varchar"
+			},
+			{
+				"name": "dwh_created_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Dim_Benchmark"
+		}
+	}
+}

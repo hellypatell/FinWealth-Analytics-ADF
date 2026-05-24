@@ -1,0 +1,167 @@
+{
+	"name": "DF_Load_Fact_Performance",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Stg_Performance",
+						"type": "DatasetReference"
+					},
+					"name": "SourcePerformance"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Dim_Accounts",
+						"type": "DatasetReference"
+					},
+					"name": "sourceAccount"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Dim_Benchmark",
+						"type": "DatasetReference"
+					},
+					"name": "sourceBenchmark"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Fact_Performance",
+						"type": "DatasetReference"
+					},
+					"name": "SinkFactPerformance"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FilterNulls"
+				},
+				{
+					"name": "DerivedPerformance"
+				},
+				{
+					"name": "LookupAccountSK"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "LookupBenchmarkSK"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          AccountID as string,",
+				"          MonthStart as date,",
+				"          ReturnPct as decimal(10,6),",
+				"          BenchmarkCode as string,",
+				"          BenchmarkReturnPct as decimal(10,6),",
+				"          ExcessReturnPct as decimal(10,6),",
+				"          CumulativeReturnPct as decimal(10,6),",
+				"          stg_load_date as timestamp,",
+				"          stg_source_file as string,",
+				"          stg_batch_id as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourcePerformance",
+				"source(output(",
+				"          account_sk as integer,",
+				"          account_id as string,",
+				"          client_id as string,",
+				"          account_type as string,",
+				"          open_date as date,",
+				"          base_currency as string,",
+				"          status as string,",
+				"          is_current as boolean,",
+				"          dwh_created_date as timestamp,",
+				"          dwh_updated_date as timestamp,",
+				"          CurrencyGroup as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceAccount",
+				"source(output(",
+				"          benchmark_sk as integer,",
+				"          benchmark_code as string,",
+				"          description as string,",
+				"          currency as string,",
+				"          dwh_created_date as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceBenchmark",
+				"SourcePerformance filter(!isNull(AccountID) && !isNull(MonthStart)) ~> FilterNulls",
+				"FilterNulls derive(performance_date_sk = toInteger(toString(MonthStart, 'yyyyMMdd')),",
+				"          PerformanceBand = case(   toDouble(ExcessReturnPct) > 2, 'Strong Outperform',   toDouble(ExcessReturnPct) > 0, 'Outperform',   toDouble(ExcessReturnPct) == 0, 'In Line',   'Underperform' ),",
+				"          dwh_load_date = currentTimestamp(),",
+				"          batch_id = 'ADF_DF_RUN',",
+				"          month_start_date_sk = toInteger(toString(MonthStart, 'yyyyMMdd'))) ~> DerivedPerformance",
+				"DerivedPerformance, sourceAccount lookup(AccountID == account_id,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> LookupAccountSK",
+				"LookupBenchmarkSK select(mapColumn(",
+				"          ReturnPct,",
+				"          benchmark_sk,",
+				"          BenchmarkReturnPct,",
+				"          ExcessReturnPct,",
+				"          CumulativeReturnPct,",
+				"          performance_date_sk,",
+				"          account_sk,",
+				"          PerformanceBand,",
+				"          batch_id,",
+				"          dwh_load_date,",
+				"          month_start_sk = month_start_date_sk",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"LookupAccountSK, sourceBenchmark lookup(BenchmarkCode == benchmark_code,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> LookupBenchmarkSK",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          performance_sk as long,",
+				"          account_sk as integer,",
+				"          benchmark_sk as integer,",
+				"          month_start_date_sk as integer,",
+				"          return_pct as decimal(10,6),",
+				"          benchmark_return_pct as decimal(10,6),",
+				"          excess_return_pct as decimal(10,6),",
+				"          cumulative_return_pct as decimal(10,6),",
+				"          dwh_load_date as timestamp,",
+				"          batch_id as string,",
+				"          PerformanceBand as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          account_sk,",
+				"          benchmark_sk,",
+				"          month_start_date_sk = month_start_sk,",
+				"          return_pct = ReturnPct,",
+				"          benchmark_return_pct = BenchmarkReturnPct,",
+				"          excess_return_pct = ExcessReturnPct,",
+				"          cumulative_return_pct = CumulativeReturnPct,",
+				"          PerformanceBand,",
+				"          batch_id,",
+				"          dwh_load_date",
+				"     )) ~> SinkFactPerformance"
+			]
+		}
+	}
+}
