@@ -713,6 +713,408 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_DWH_Dim_Advisor')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_StagingSQL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "advisor_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "advisor_id",
+						"type": "varchar"
+					},
+					{
+						"name": "advisor_name",
+						"type": "varchar"
+					},
+					{
+						"name": "region",
+						"type": "varchar"
+					},
+					{
+						"name": "join_date",
+						"type": "date"
+					},
+					{
+						"name": "experience_years",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "is_current",
+						"type": "bit"
+					},
+					{
+						"name": "dwh_created_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "dwh_updated_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "ExperienceBand",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Dim_Advisor"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_StagingSQL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Dim_Accounts')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_StagingSQL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "account_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "account_id",
+						"type": "varchar"
+					},
+					{
+						"name": "client_id",
+						"type": "varchar"
+					},
+					{
+						"name": "account_type",
+						"type": "varchar"
+					},
+					{
+						"name": "open_date",
+						"type": "date"
+					},
+					{
+						"name": "base_currency",
+						"type": "varchar"
+					},
+					{
+						"name": "status",
+						"type": "varchar"
+					},
+					{
+						"name": "is_current",
+						"type": "bit"
+					},
+					{
+						"name": "dwh_created_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "dwh_updated_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "CurrencyGroup",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Dim_Account"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_StagingSQL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Dim_Date')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_StagingSQL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "date_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "full_date",
+						"type": "date"
+					},
+					{
+						"name": "day_of_week",
+						"type": "varchar"
+					},
+					{
+						"name": "day_num",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "week_num",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "month_num",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "month_name",
+						"type": "varchar"
+					},
+					{
+						"name": "quarter_num",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "quarter_name",
+						"type": "varchar"
+					},
+					{
+						"name": "year_num",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "is_weekday",
+						"type": "bit"
+					},
+					{
+						"name": "is_month_end",
+						"type": "bit"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "dim_date"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_StagingSQL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Dim_Security')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_StagingSQL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "security_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "security_id",
+						"type": "varchar"
+					},
+					{
+						"name": "ticker",
+						"type": "varchar"
+					},
+					{
+						"name": "security_name",
+						"type": "varchar"
+					},
+					{
+						"name": "asset_class",
+						"type": "varchar"
+					},
+					{
+						"name": "sector",
+						"type": "varchar"
+					},
+					{
+						"name": "currency",
+						"type": "varchar"
+					},
+					{
+						"name": "region",
+						"type": "varchar"
+					},
+					{
+						"name": "is_current",
+						"type": "bit"
+					},
+					{
+						"name": "dwh_created_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "dwh_updated_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "AssetClassGroup",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Dim_Security"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_StagingSQL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Fact_Trades')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_StagingSQL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "trade_sk",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "trade_id",
+						"type": "varchar"
+					},
+					{
+						"name": "account_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "security_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "trade_date_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "settle_date_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "side",
+						"type": "varchar"
+					},
+					{
+						"name": "price",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "quantity",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "trade_amount",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "gross_amount",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "dwh_load_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "batch_id",
+						"type": "varchar"
+					},
+					{
+						"name": "TradeCategory",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TradeSize",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Fact_Trades"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_StagingSQL')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_SQL_Stg_Accounts')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -776,323 +1178,6 @@
 				"typeProperties": {
 					"schema": "dbo",
 					"table": "stg_accounts"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_StagingSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_SQL_Stg_Advisor')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_StagingSQL",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "advisor_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "advisor_id",
-						"type": "varchar"
-					},
-					{
-						"name": "advisor_name",
-						"type": "varchar"
-					},
-					{
-						"name": "region",
-						"type": "varchar"
-					},
-					{
-						"name": "join_date",
-						"type": "date"
-					},
-					{
-						"name": "experience_years",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "is_current",
-						"type": "bit"
-					},
-					{
-						"name": "dwh_created_date",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "dwh_updated_date",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "stg_advisors"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_StagingSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_SQL_Stg_Benchmarks')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_StagingSQL",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "benchmark_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "benchmark_code",
-						"type": "varchar"
-					},
-					{
-						"name": "description",
-						"type": "varchar"
-					},
-					{
-						"name": "currency",
-						"type": "varchar"
-					},
-					{
-						"name": "dwh_created_date",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "stg_benchmarks"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_StagingSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_SQL_Stg_Cashflows')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_StagingSQL",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "cashflow_sk",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "cashflow_id",
-						"type": "varchar"
-					},
-					{
-						"name": "account_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "cashflow_date_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "cashflow_type",
-						"type": "varchar"
-					},
-					{
-						"name": "amount",
-						"type": "decimal",
-						"precision": 18,
-						"scale": 2
-					},
-					{
-						"name": "dwh_load_date",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "batch_id",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "stg_cashflows"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_StagingSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_SQL_Stg_Clients')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_StagingSQL",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "client_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "client_id",
-						"type": "varchar"
-					},
-					{
-						"name": "client_name",
-						"type": "varchar"
-					},
-					{
-						"name": "segment",
-						"type": "varchar"
-					},
-					{
-						"name": "risk_profile",
-						"type": "varchar"
-					},
-					{
-						"name": "country",
-						"type": "varchar"
-					},
-					{
-						"name": "client_since",
-						"type": "date"
-					},
-					{
-						"name": "advisor_id",
-						"type": "varchar"
-					},
-					{
-						"name": "is_current",
-						"type": "bit"
-					},
-					{
-						"name": "dwh_created_date",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "dwh_updated_date",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "stg_clients"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/LS_StagingSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DS_SQL_Stg_Fees')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "LS_StagingSQL",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Staging"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "fee_sk",
-						"type": "bigint",
-						"precision": 19
-					},
-					{
-						"name": "fee_id",
-						"type": "varchar"
-					},
-					{
-						"name": "account_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "fee_date_sk",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "fee_type",
-						"type": "varchar"
-					},
-					{
-						"name": "fee_amount",
-						"type": "decimal",
-						"precision": 18,
-						"scale": 2
-					},
-					{
-						"name": "dwh_load_date",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "batch_id",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "stg_fees"
 				}
 			},
 			"dependsOn": [
