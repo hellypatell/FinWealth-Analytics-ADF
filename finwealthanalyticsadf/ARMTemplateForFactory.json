@@ -3108,6 +3108,9 @@
 						},
 						{
 							"name": "selectCols"
+						},
+						{
+							"name": "derivedColumnDateKeys"
 						}
 					],
 					"scriptLines": [
@@ -3187,19 +3190,22 @@
 						"     multiple: false,",
 						"     pickup: 'any',",
 						"     broadcast: 'auto')~> LookupAccounts",
-						"FilterNullTrades derive(TradeCategory = case(   upper(Side) == 'BUY', 'Purchase',   upper(Side) == 'SELL', 'Liquidation',   'Unknown' ),",
+						"FilterNullTrades derive(TradeCategory = case(\r",
+						"  upper(Side) == 'BUY', 'Purchase',\r",
+						"  upper(Side) == 'SELL', 'Liquidation',\r",
+						"  'Unknown'\r",
+						"),",
 						"          TradeSize = case(   toDouble(Amount) >= 100000, 'Large',   toDouble(Amount) >= 10000, 'Medium',   'Small' ),",
 						"          gross_amount = abs(toDecimal(Amount))) ~> DerivedColumnTrades",
 						"LookupAccounts, sourceSecurity lookup(SecurityID == security_id,",
 						"     multiple: false,",
 						"     pickup: 'any',",
 						"     broadcast: 'auto')~> lookupSecurity",
-						"lookupSecurity, sourceDate lookup(SettleDate == full_date",
-						"     && TradeDate == full_date,",
+						"lookupSecurity, sourceDate lookup(SettleDate == full_date,",
 						"     multiple: false,",
 						"     pickup: 'any',",
 						"     broadcast: 'auto')~> lookupDate",
-						"lookupDate select(mapColumn(",
+						"derivedColumnDateKeys select(mapColumn(",
 						"          TradeID,",
 						"          Side,",
 						"          Price,",
@@ -3208,15 +3214,17 @@
 						"          stg_batch_id,",
 						"          TradeCategory,",
 						"          TradeSize,",
-						"          account_sk,",
-						"          security_sk,",
+						"          account_sk = AccountID,",
+						"          security_sk = SecurityID,",
 						"          date_sk,",
 						"          gross_amount,",
-						"          SettleDate,",
-						"          TradeDate",
+						"          trade_date_sk,",
+						"          settle_date_sk",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> selectCols",
+						"lookupDate derive(trade_date_sk = toInteger(toString(TradeDate, 'yyyyMMdd')),",
+						"          settle_date_sk = toInteger(toString(SettleDate, 'yyyyMMdd'))) ~> derivedColumnDateKeys",
 						"selectCols sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
@@ -3241,6 +3249,7 @@
 						"     updateable:false,",
 						"     upsertable:false,",
 						"     format: 'table',",
+						"     preSQLs:['TRUNCATE TABLE Fact_Trades'],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     errorHandlingOption: 'stopOnFirstError',",
@@ -3248,8 +3257,8 @@
 						"          trade_id = TradeID,",
 						"          account_sk,",
 						"          security_sk,",
-						"          trade_date_sk = TradeDate,",
-						"          settle_date_sk = SettleDate,",
+						"          trade_date_sk,",
+						"          settle_date_sk,",
 						"          side = Side,",
 						"          price = Price,",
 						"          quantity = Quantity,",
@@ -3268,6 +3277,208 @@
 				"[concat(variables('factoryId'), '/datasets/DS_Dim_Security')]",
 				"[concat(variables('factoryId'), '/datasets/DS_Dim_Date')]",
 				"[concat(variables('factoryId'), '/datasets/DS_Fact_Trades')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_Load_Fact_Cashflows')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DS_SQL_Stg_Cashflows",
+								"type": "DatasetReference"
+							},
+							"name": "SourceCashflows"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_Dim_Accounts",
+								"type": "DatasetReference"
+							},
+							"name": "sourceAccounts"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DS_Fact_Cashflow",
+								"type": "DatasetReference"
+							},
+							"name": "SinkFactCashflows"
+						}
+					],
+					"transformations": [
+						{
+							"name": "FilterNulls"
+						},
+						{
+							"name": "DerivedCashflows"
+						},
+						{
+							"name": "lookupAcconts"
+						},
+						{
+							"name": "selectCol"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          CashflowID as string,",
+						"          AccountID as string,",
+						"          CashflowDate as date,",
+						"          Type as string,",
+						"          Amount as decimal(18,2),",
+						"          stg_load_date as timestamp,",
+						"          stg_source_file as string,",
+						"          stg_batch_id as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> SourceCashflows",
+						"source(output(",
+						"          account_sk as integer,",
+						"          account_id as string,",
+						"          client_id as string,",
+						"          account_type as string,",
+						"          open_date as date,",
+						"          base_currency as string,",
+						"          status as string,",
+						"          is_current as boolean,",
+						"          dwh_created_date as timestamp,",
+						"          dwh_updated_date as timestamp,",
+						"          CurrencyGroup as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> sourceAccounts",
+						"SourceCashflows filter(!isNull(CashflowID) && !isNull(AccountID) && !isNull(CashflowDate) && !isNull(Amount)) ~> FilterNulls",
+						"FilterNulls derive(cashflow_date_sk = toInteger(toString(CashflowDate, 'yyyyMMdd')),",
+						"          FlowDirection = case(   upper(Type) == 'DEPOSIT', 'Inflow',   upper(Type) == 'INTEREST', 'Inflow',   upper(Type) == 'DIVIDEND', 'Inflow',   upper(Type) == 'WITHDRAWAL', 'Outflow',   'Neutral' )) ~> DerivedCashflows",
+						"DerivedCashflows, sourceAccounts lookup(toString(AccountID) == toString(account_id),",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookupAcconts",
+						"lookupAcconts select(mapColumn(",
+						"          cashflow_id = CashflowID,",
+						"          cashflow_date_sk,",
+						"          cashflow_type = Type,",
+						"          amount = Amount,",
+						"          FlowDirection,",
+						"          account_sk",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectCol",
+						"selectCol sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          cashflow_sk as long,",
+						"          cashflow_id as string,",
+						"          account_sk as integer,",
+						"          cashflow_date_sk as integer,",
+						"          cashflow_type as string,",
+						"          amount as decimal(18,2),",
+						"          dwh_load_date as timestamp,",
+						"          batch_id as string,",
+						"          FlowDirection as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     truncate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          cashflow_id,",
+						"          account_sk,",
+						"          cashflow_date_sk,",
+						"          cashflow_type,",
+						"          amount,",
+						"          FlowDirection",
+						"     )) ~> SinkFactCashflows"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_SQL_Stg_Cashflows')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Dim_Accounts')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Fact_Cashflow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Fact_Cashflow')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_StagingSQL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "cashflow_sk",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "cashflow_id",
+						"type": "varchar"
+					},
+					{
+						"name": "account_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "cashflow_date_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "cashflow_type",
+						"type": "varchar"
+					},
+					{
+						"name": "amount",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "dwh_load_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "batch_id",
+						"type": "varchar"
+					},
+					{
+						"name": "FlowDirection",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Fact_Cashflows"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_StagingSQL')]"
 			]
 		}
 	]
