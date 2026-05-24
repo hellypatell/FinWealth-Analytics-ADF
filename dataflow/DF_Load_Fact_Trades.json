@@ -1,0 +1,138 @@
+{
+	"name": "DF_Load_Fact_Trades",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Stg_Trades",
+						"type": "DatasetReference"
+					},
+					"name": "SourceTrades"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Dim_Accounts",
+						"type": "DatasetReference"
+					},
+					"name": "sourceAccount"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Dim_Security",
+						"type": "DatasetReference"
+					},
+					"name": "sourceSecurity"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Dim_Date",
+						"type": "DatasetReference"
+					},
+					"name": "sourceDate"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "FilterNullTrades"
+				},
+				{
+					"name": "LookupAccounts"
+				},
+				{
+					"name": "DerivedColumnTrades"
+				},
+				{
+					"name": "lookupSecurity"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          TradeID as string,",
+				"          AccountID as string,",
+				"          SecurityID as string,",
+				"          TradeDate as date,",
+				"          SettleDate as date,",
+				"          Side as string,",
+				"          Price as decimal(18,4),",
+				"          Quantity as decimal(18,4),",
+				"          Amount as decimal(18,2),",
+				"          stg_load_date as timestamp,",
+				"          stg_source_file as string,",
+				"          stg_batch_id as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceTrades",
+				"source(output(",
+				"          account_sk as integer,",
+				"          account_id as string,",
+				"          client_id as string,",
+				"          account_type as string,",
+				"          open_date as date,",
+				"          base_currency as string,",
+				"          status as string,",
+				"          is_current as boolean,",
+				"          dwh_created_date as timestamp,",
+				"          dwh_updated_date as timestamp,",
+				"          CurrencyGroup as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceAccount",
+				"source(output(",
+				"          security_sk as integer,",
+				"          security_id as string,",
+				"          ticker as string,",
+				"          security_name as string,",
+				"          asset_class as string,",
+				"          sector as string,",
+				"          currency as string,",
+				"          region as string,",
+				"          is_current as boolean,",
+				"          dwh_created_date as timestamp,",
+				"          dwh_updated_date as timestamp,",
+				"          AssetClassGroup as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceSecurity",
+				"source(output(",
+				"          date_sk as integer,",
+				"          full_date as date,",
+				"          day_of_week as string,",
+				"          day_num as integer,",
+				"          week_num as integer,",
+				"          month_num as integer,",
+				"          month_name as string,",
+				"          quarter_num as integer,",
+				"          quarter_name as string,",
+				"          year_num as integer,",
+				"          is_weekday as boolean,",
+				"          is_month_end as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceDate",
+				"SourceTrades filter(!isNull(TradeID) && !isNull(AccountID) && !isNull(SecurityID)) ~> FilterNullTrades",
+				"DerivedColumnTrades, sourceAccount lookup(AccountID == account_id,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> LookupAccounts",
+				"FilterNullTrades derive(TradeCategory = case(   upper(Side) == 'BUY', 'Purchase',   upper(Side) == 'SELL', 'Liquidation',   'Unknown' ),",
+				"          TradeSize = case(   toDouble(Amount) >= 100000, 'Large',   toDouble(Amount) >= 10000, 'Medium',   'Small' ),",
+				"          gross_amount = abs(toDouble(Amount))) ~> DerivedColumnTrades",
+				"LookupAccounts lookup(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookupSecurity"
+			]
+		}
+	}
+}

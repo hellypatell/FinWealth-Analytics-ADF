@@ -1,0 +1,74 @@
+{
+	"name": "DS_Dim_Date",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DHW"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "date_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "full_date",
+				"type": "date"
+			},
+			{
+				"name": "day_of_week",
+				"type": "varchar"
+			},
+			{
+				"name": "day_num",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "week_num",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "month_num",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "month_name",
+				"type": "varchar"
+			},
+			{
+				"name": "quarter_num",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "quarter_name",
+				"type": "varchar"
+			},
+			{
+				"name": "year_num",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "is_weekday",
+				"type": "bit"
+			},
+			{
+				"name": "is_month_end",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "dim_date"
+		}
+	}
+}

@@ -1,0 +1,73 @@
+{
+	"name": "DS_Dim_Security",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DHW"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "security_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "security_id",
+				"type": "varchar"
+			},
+			{
+				"name": "ticker",
+				"type": "varchar"
+			},
+			{
+				"name": "security_name",
+				"type": "varchar"
+			},
+			{
+				"name": "asset_class",
+				"type": "varchar"
+			},
+			{
+				"name": "sector",
+				"type": "varchar"
+			},
+			{
+				"name": "currency",
+				"type": "varchar"
+			},
+			{
+				"name": "region",
+				"type": "varchar"
+			},
+			{
+				"name": "is_current",
+				"type": "bit"
+			},
+			{
+				"name": "dwh_created_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "dwh_updated_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "AssetClassGroup",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Dim_Security"
+		}
+	}
+}

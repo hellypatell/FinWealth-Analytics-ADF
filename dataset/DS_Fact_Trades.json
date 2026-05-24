@@ -1,0 +1,95 @@
+{
+	"name": "DS_Fact_Trades",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DHW"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "trade_sk",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "trade_id",
+				"type": "varchar"
+			},
+			{
+				"name": "account_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "security_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "trade_date_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "settle_date_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "side",
+				"type": "varchar"
+			},
+			{
+				"name": "price",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "quantity",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "trade_amount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "gross_amount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "dwh_load_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "batch_id",
+				"type": "varchar"
+			},
+			{
+				"name": "TradeCategory",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TradeSize",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Fact_Trades"
+		}
+	}
+}
