@@ -1,0 +1,83 @@
+{
+	"name": "DF_Load_Dim_Advisor",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Stg_Advisor",
+						"type": "DatasetReference"
+					},
+					"name": "SourceAdvisor"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_DWH_Dim_Advisor",
+						"type": "DatasetReference"
+					},
+					"name": "SinkDimAdvisor"
+				}
+			],
+			"transformations": [
+				{
+					"name": "ExperienceBand"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          advisor_sk as integer,",
+				"          advisor_id as string,",
+				"          advisor_name as string,",
+				"          region as string,",
+				"          join_date as date,",
+				"          experience_years as integer,",
+				"          is_current as boolean,",
+				"          dwh_created_date as timestamp,",
+				"          dwh_updated_date as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceAdvisor",
+				"SourceAdvisor derive(ExperienceBand = case(   toInteger(experience_years) >= 15, 'Senior',   toInteger(experience_years) >= 8, 'Mid-Level',   toInteger(experience_years) >= 3, 'Junior',   'Trainee' )) ~> ExperienceBand",
+				"ExperienceBand sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          advisor_sk as integer,",
+				"          advisor_id as string,",
+				"          advisor_name as string,",
+				"          region as string,",
+				"          join_date as date,",
+				"          experience_years as integer,",
+				"          is_current as boolean,",
+				"          dwh_created_date as timestamp,",
+				"          dwh_updated_date as timestamp,",
+				"          ExperienceBand as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          advisor_sk,",
+				"          advisor_id,",
+				"          advisor_name,",
+				"          region,",
+				"          join_date,",
+				"          experience_years,",
+				"          is_current,",
+				"          dwh_created_date,",
+				"          dwh_updated_date,",
+				"          ExperienceBand",
+				"     )) ~> SinkDimAdvisor"
+			]
+		}
+	}
+}
