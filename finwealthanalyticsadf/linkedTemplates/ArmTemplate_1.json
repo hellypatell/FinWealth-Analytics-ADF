@@ -729,6 +729,68 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_Fact_Fees')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_StagingSQL",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "DHW"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "fee_sk",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "fee_id",
+						"type": "varchar"
+					},
+					{
+						"name": "account_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fee_date_sk",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fee_type",
+						"type": "varchar"
+					},
+					{
+						"name": "fee_amount",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "dwh_load_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "batch_id",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Fact_Fees"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/PL_Copy_CSV_To_Staging_To_DWH')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -2207,6 +2269,136 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DS_SQL_Stg_Cashflows')]",
 				"[concat(variables('factoryId'), '/datasets/DS_Fact_Cashflow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_Load_Fact_Fees')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DS_SQL_Stg_Fees",
+								"type": "DatasetReference"
+							},
+							"name": "SourceFees"
+						},
+						{
+							"dataset": {
+								"referenceName": "DS_Dim_Accounts",
+								"type": "DatasetReference"
+							},
+							"name": "sourceAccount"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DS_Fact_Fees",
+								"type": "DatasetReference"
+							},
+							"name": "SinkFactFees"
+						}
+					],
+					"transformations": [
+						{
+							"name": "FilterNulls"
+						},
+						{
+							"name": "DerivedFees"
+						},
+						{
+							"name": "lookup1"
+						},
+						{
+							"name": "select1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          FeeID as string,",
+						"          AccountID as string,",
+						"          FeeDate as date,",
+						"          FeeType as string,",
+						"          Amount as decimal(18,2),",
+						"          stg_load_date as timestamp,",
+						"          stg_source_file as string,",
+						"          stg_batch_id as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> SourceFees",
+						"source(output(",
+						"          account_sk as integer,",
+						"          account_id as string,",
+						"          client_id as string,",
+						"          account_type as string,",
+						"          open_date as date,",
+						"          base_currency as string,",
+						"          status as string,",
+						"          is_current as boolean,",
+						"          dwh_created_date as timestamp,",
+						"          dwh_updated_date as timestamp,",
+						"          CurrencyGroup as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> sourceAccount",
+						"SourceFees filter(!isNull(FeeID) && !isNull(AccountID) && !isNull(Amount)) ~> FilterNulls",
+						"FilterNulls derive(fee_date_sk = toInteger(toString(FeeDate, 'yyyyMMdd'))) ~> DerivedFees",
+						"DerivedFees, sourceAccount lookup(AccountID  == account_id,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookup1",
+						"lookup1 select(mapColumn(",
+						"          FeeID,",
+						"          FeeDate,",
+						"          FeeType,",
+						"          Amount,",
+						"          fee_date_sk,",
+						"          account_sk",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          fee_sk as long,",
+						"          fee_id as string,",
+						"          account_sk as integer,",
+						"          fee_date_sk as integer,",
+						"          fee_type as string,",
+						"          fee_amount as decimal(18,2),",
+						"          dwh_load_date as timestamp,",
+						"          batch_id as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     truncate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          fee_id = FeeID,",
+						"          account_sk,",
+						"          fee_date_sk,",
+						"          fee_type = FeeType,",
+						"          fee_amount = Amount",
+						"     )) ~> SinkFactFees"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_SQL_Stg_Fees')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Fact_Fees')]"
 			]
 		},
 		{
