@@ -1,0 +1,127 @@
+{
+	"name": "DF_Load_Fact_Cashflows",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Stg_Cashflows",
+						"type": "DatasetReference"
+					},
+					"name": "SourceCashflows"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Dim_Accounts",
+						"type": "DatasetReference"
+					},
+					"name": "sourceAccounts"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Fact_Cashflow",
+						"type": "DatasetReference"
+					},
+					"name": "SinkFactCashflows"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FilterNulls"
+				},
+				{
+					"name": "DerivedCashflows"
+				},
+				{
+					"name": "lookupAcconts"
+				},
+				{
+					"name": "selectCol"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CashflowID as string,",
+				"          AccountID as string,",
+				"          CashflowDate as date,",
+				"          Type as string,",
+				"          Amount as decimal(18,2),",
+				"          stg_load_date as timestamp,",
+				"          stg_source_file as string,",
+				"          stg_batch_id as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceCashflows",
+				"source(output(",
+				"          account_sk as integer,",
+				"          account_id as string,",
+				"          client_id as string,",
+				"          account_type as string,",
+				"          open_date as date,",
+				"          base_currency as string,",
+				"          status as string,",
+				"          is_current as boolean,",
+				"          dwh_created_date as timestamp,",
+				"          dwh_updated_date as timestamp,",
+				"          CurrencyGroup as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceAccounts",
+				"SourceCashflows filter(!isNull(CashflowID) && !isNull(AccountID) && !isNull(CashflowDate) && !isNull(Amount)) ~> FilterNulls",
+				"FilterNulls derive(cashflow_date_sk = toInteger(toString(CashflowDate, 'yyyyMMdd')),",
+				"          FlowDirection = case(   upper(Type) == 'DEPOSIT', 'Inflow',   upper(Type) == 'INTEREST', 'Inflow',   upper(Type) == 'DIVIDEND', 'Inflow',   upper(Type) == 'WITHDRAWAL', 'Outflow',   'Neutral' )) ~> DerivedCashflows",
+				"DerivedCashflows, sourceAccounts lookup(toString(AccountID) == toString(account_id),",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookupAcconts",
+				"lookupAcconts select(mapColumn(",
+				"          cashflow_id = CashflowID,",
+				"          cashflow_date_sk,",
+				"          cashflow_type = Type,",
+				"          amount = Amount,",
+				"          FlowDirection,",
+				"          account_sk",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectCol",
+				"selectCol sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          cashflow_sk as long,",
+				"          cashflow_id as string,",
+				"          account_sk as integer,",
+				"          cashflow_date_sk as integer,",
+				"          cashflow_type as string,",
+				"          amount as decimal(18,2),",
+				"          dwh_load_date as timestamp,",
+				"          batch_id as string,",
+				"          FlowDirection as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          cashflow_id,",
+				"          account_sk,",
+				"          cashflow_date_sk,",
+				"          cashflow_type,",
+				"          amount,",
+				"          FlowDirection",
+				"     )) ~> SinkFactCashflows"
+			]
+		}
+	}
+}

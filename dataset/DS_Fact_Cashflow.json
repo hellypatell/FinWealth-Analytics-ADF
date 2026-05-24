@@ -1,0 +1,63 @@
+{
+	"name": "DS_Fact_Cashflow",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_StagingSQL",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "DHW"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "cashflow_sk",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "cashflow_id",
+				"type": "varchar"
+			},
+			{
+				"name": "account_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "cashflow_date_sk",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "cashflow_type",
+				"type": "varchar"
+			},
+			{
+				"name": "amount",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "dwh_load_date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "batch_id",
+				"type": "varchar"
+			},
+			{
+				"name": "FlowDirection",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Fact_Cashflows"
+		}
+	}
+}
