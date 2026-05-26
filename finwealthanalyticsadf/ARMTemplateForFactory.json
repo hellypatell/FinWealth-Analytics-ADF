@@ -709,33 +709,6 @@
 						}
 					},
 					{
-						"name": "SP_Fact_Cashflows",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "Wait2",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_load_fact_cashflows]"
-						},
-						"linkedServiceName": {
-							"referenceName": "LS_StagingSQL",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
 						"name": "SP_Dim_Client",
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [
@@ -790,60 +763,6 @@
 						}
 					},
 					{
-						"name": "SP_Fact_Performance",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "Wait2",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_load_fact_performance]"
-						},
-						"linkedServiceName": {
-							"referenceName": "LS_StagingSQL",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "SP_Fact_Holdings",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "Wait2",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_load_fact_holdings]"
-						},
-						"linkedServiceName": {
-							"referenceName": "LS_StagingSQL",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
 						"name": "SP_Dim_Security",
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [
@@ -864,60 +783,6 @@
 						"userProperties": [],
 						"typeProperties": {
 							"storedProcedureName": "[[dbo].[usp_load_dim_security]"
-						},
-						"linkedServiceName": {
-							"referenceName": "LS_StagingSQL",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "SP_Fact_Trades",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "Wait2",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_load_fact_trades]"
-						},
-						"linkedServiceName": {
-							"referenceName": "LS_StagingSQL",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "SP_Fact_Fees",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "Wait2",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[usp_load_fact_fees]"
 						},
 						"linkedServiceName": {
 							"referenceName": "LS_StagingSQL",
@@ -1038,6 +903,33 @@
 						"userProperties": [],
 						"typeProperties": {
 							"waitTimeInSeconds": 1
+						}
+					},
+					{
+						"name": "SP_Validation",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Wait2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_validate_staging]"
+						},
+						"linkedServiceName": {
+							"referenceName": "LS_StagingSQL",
+							"type": "LinkedServiceReference"
 						}
 					}
 				],
